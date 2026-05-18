@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<!-- подключение скрипта для галереи baguetteBox -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.css">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портфолио инженерных проектов</title>
+    <style>
+        /* ... (ВАШ CSS КОД ОСТАЕТСЯ БЕЗ ИЗМЕНЕНИЙ) ... */
+        /* Общие стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background-color: #2c3e50;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        /* Стили блоков проектов */
+        .project {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .project:hover {
+            transform: translateY(-5px);
+        }
+        
+        .project-image {
+            width: 100%;
+            display: block;
+        }
+        
+        .project-content {
+            padding: 25px;
+        }
+        
+        .project-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .project-description {
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+        
+        .project-description ul, .project-description ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .project-description li {
+            margin-bottom: 5px;
+        }
+        
+        .bold {
+            font-weight: bold;
+        }
+        
+        .underline {
+            text-decoration: underline;
+        }
+        
+        .italic {
+            font-style: italic;
+        }
+        
+        /* Дополнительные медиаматериалы */
+        .additional-media {
+            display: grid; /* для матрицы из фото */
+            grid-template-columns: repeat(3, 1fr); /* 3 равные колонки */
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .media-item {
+            aspect-ratio: 1 / 1;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .media-item img, .media-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Ссылки проекта */
+        .project-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .project-link {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .project-link:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Футер */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            background-color: #2c3e50;
+            color: white;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .project-image {
+                height: 300px;
+            }
+            
+            .media-item {
+                flex: 1 1 100%;
+            }
+            
+            .project-links {
+                flex-direction: column;
+            }
+        }
+        
+        /* =============================================================== */
+        /* Стили для статуса проекта                                      */
+        /* =============================================================== */
+
+        /* Общий стиль для всех статусов */
+        .project-status {
+            font-size: 0.9rem;      /* Чуть меньше основного текста */
+            font-style: italic;     /* Курсив, чтобы выделить */
+            font-weight: 500;
+            margin-top: -10px;      /* Немного подтянем к заголовку */
+            margin-bottom: 20px;    /* Дадим отступ до основного текста */
+        }
+
+        /* Модификатор для ЗАВЕРШЕННЫХ проектов (зеленый) */
+        .status-completed {
+            color: #28a745; /* Приятный зеленый цвет */
+        }
+
+        /* Модификатор для проектов В ПРОЦЕССЕ (синий) */
+        .status-in-progress {
+            color: #007bff; /* Профессиональный синий */
+        }
+
+        /* Модификатор для АРХИВНЫХ проектов (серый) */
+        .status-archived {
+            color: #6c757d; /* Нейтральный серый */
+        }
+
+        /* =============================================================== */
+        /* АДАПТИВНОСТЬ ДЛЯ БОЛЬШШИХ ЭКРАНОВ (Две колонки)                  */
+        /* =============================================================== */
+        @media (min-width: 1024px) { /* Эти стили сработают, только если экран шире 1024px */
+
+            #project-list {
+                display: flex;      /* режим гибких колонок */
+                flex-wrap: wrap;    /* перенос проектов на новую строку */
+                gap: 40px;          /* отступ в 40px между проектами */
+            }
+
+            #project-list .project {
+                /* карточка проекта занимает половину ширины, 
+                   за вычетом половины отступа (40px / 2 = 20px) */
+                width: calc(50% - 20px); 
+                margin-bottom: 0; /* отступ снизу не нужен, т.к. есть gap */
+            }
+        }
+            
+        .add-space-top {
+            margin-top: 1.5em; /* добавить отступ сверху в 25 пикселей */
+        }
+
+        /* =============================================================== */
+        /* Стили для скрытой галереи и кнопки                             */
+        /* =============================================================== */
+        
+        /* по умолчанию прячем галерею */
+        .additional-media {
+            /* убрать высоту и отступы */
+            max-height: 0;
+            overflow: hidden;
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            
+            /* плавный переход для всех свойств */
+            transition: all 0.7s ease-in-out;
+        }
+
+        /* этот класс будет добавляться через JS, чтобы показать галерею */
+        .additional-media.gallery-visible {
+            /* возвращаем высоту и отступы */
+            max-height: 1000px; /* большое значение, чтобы точно хватило */
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Портфолио</h1>
+            <p>Работы 2024-2025</p>
+        </div>
+    </header>
+    
+    <div class="container" id="project-list">
+        <!-- СИСТЕМА ВИЗУАЛЬНОГО ПОЗИЦИОНИРОВАНИЯ -->
+        <div class="project">
+            <!-- Главное фото проекта -->
+            <img src="images/CV_main_render.JPG" alt="Система визуального позиционирования" class="project-image">
+            <div class="project-content">
+                <h2 class="project-title">Система автоматического наведения (CV)</h2>
+                <p class="project-status status-in-progress">(В процессе)</p>
+                <div class="project-description">
+                    <p>
+                        <span class="bold underline">Задача:</span> разработать механическое устройство, способное в реальном времени детектировать и отслеживать быстро перемещающуюся цель на экране ноутбука, фиксируя на ней курсор мыши (учебный проект по компьютерному зрению, по сути аналогичный aimbot-читу; тесты в программе Aimlabs и fps-шутерах CS2, Valorant)
+                    </p>
+                    
+                    <p class="bold add-space-top underline">Ключевые особенности:</p>
+                    <ul>
+                        <li><span class="bold">Аппаратная изоляция:</span> любое программное взаимодействие с хост-компьютером исключено</li>
+                        <li><span class="bold">Соотношение жесткость-инерция:</span> подвижные элементы облегчены методом топологической оптимизации</li>
+                        <li><span class="bold">CAD:</span> SolidWorks</li>
+                        <li><span class="bold">ПО:</span> C++, Python, OpenCV, Git, VScode</li>
+                        <li><span class="bold">Электроника:</span> RPi 5, RPi camera, Nema 17, TMC2209, stm32 black pill</li>
+                        <li><span class="bold">Производство:</span> лазерная резка (алюминий, сталь), 3D-печать</li>
+                    </ul>
+                </div>
+                
+                <div id="project1-gallery" class="additional-media">
+                    <a href="images/CV_photo2.jpg" class="media-item">
+                        <img src="images/CV_photo2.jpg" alt="Фото прототипа 2">
+                    </a>
+                    <a href="images/CV_photo.jpg" class="media-item">
+                        <img src="images/CV_photo.jpg" alt="Фото прототипа">
+                    </a>
+                    <a href="images/CV_main_render.JPG" class="media-item">
+                        <img src="images/CV_main_render.JPG" alt="Рендер">
+                    </a>
+                    <a href="images/CV_topological.png" class="media-item">
+                        <img src="images/CV_topological.png" alt="Топология">
+                    </a>
+                    <a href="images/CV_main_solid.png" class="media-item">
+                        <img src="images/CV_main_solid.png" alt="Скрин сборки">
+                    </a>
+                    <a href="images/CV_cymatics.png" class="media-item">
+                        <img src="images/CV_cymatics.png" alt="Кинематика">
+                    </a>
+                </div>
+                
+                <div class="project-links">
+                    <a href="#" id="project1-btn" class="project-link">Галерея</a>
+                    <a href="https://github.com/Mikhail-Lashin/undetectable-mechanical-aimbot" class="project-link">GitHub</a>
+                </div>
+            </div>
+        </div>
+        <!-- Конец проекта-->
+
+        <!-- ЛАЗЕРНЫЙ ГРАВЕР-->
+         <div class="project">
+            <!-- Главное фото проекта -->
+            <img src="images/CNC_photo.JPG" alt="Крупноформатный лазерный ЧПУ" class="project-image">
+            <div class="project-content">
+                <h2 class="project-title">Крупноформатный лазерный ЧПУ</h2>
+                <p class="project-status status-completed">(Завершено)</p>
+                <div class="project-description">
+                    <p>
+                        <span class="bold underline">Задача:</span> спроектировать с нуля и собрать крупноформатный лазерный ЧПУ-станок (рабочая зона 800x800 мм)
+                    </p>
+                    
+                    <p class="bold add-space-top underline">Ключевые особенности:</p>
+                    <ul>
+                        <li><span class="bold">CAD:</span> Компас-3D (проектирование), SolidWorks (рендер)</li>
+                        <li><span class="bold">ПО:</span> LightBurn, LaserGRBL</li>
+                        <li><span class="bold">Электроника:</span> Laser Module 10W 455nm, MKS DLC 32, Nema 17, A4988</li>
+                        <li><span class="bold">Производство:</span> 3D-печать, слесарная сборка</li>
+                    </ul>
+                </div>
+                
+                <div id="project2-gallery" class="additional-media">
+                    <a href="images/CNC_photo.JPG" class="media-item">
+                        <img src="images/CNC_photo.JPG" alt="Фото готового станка">
+                    </a>
+                    <a href="images/CNC_main_render.JPG" class="media-item">
+                        <img src="images/CNC_main_render.JPG" alt="Общий рендер станка">
+                    </a>
+                    <a href="images/CNC_portal_render.JPG" class="media-item">
+                        <img src="images/CNC_portal_render.JPG" alt="Рендер портала">
+                    </a>
+                    <a href="images/CNC_laser_render.png" class="media-item">
+                        <img src="images/CNC_laser_render.png" alt="Рендер лазерной головки">
+                    </a>
+                    <a href="images/CNC_carriages.png" class="media-item">
+                        <img src="images/CNC_carriages.png" alt="Каретки осей">
+                    </a>
+                    <a href="images/CNC_circuit.png" class="media-item">
+                        <img src="images/CNC_circuit.png" alt="Схема электроники">
+                    </a>
+                    <a href="images/CNC_accuracy.jpg" class="media-item">
+                        <img src="images/CNC_accuracy.jpg" alt="Тест точности гравировки">
+                    </a>
+                    <a href="images/CNC_ros_robot.png" class="media-item">
+                        <img src="images/CNC_ros_robot.png" alt="Робот для ROS хакатона">
+                    </a>
+                </div>
+                
+                <div class="project-links">
+                    <a href="#" id="project2-btn" class="project-link">Галерея</a>
+                    <a href="https://vk.com/video507846758_456239096" target="_blank" class="project-link">Видео с демонстрацией</a>
+                    <a href="https://habr.com/ru/articles/907868/?ysclid=mf7anx5k86968356154" target="_blank" class="project-link">Статья (Хабр)</a>
+                </div>
+            </div>
+        </div>
+        <!-- Конец проекта-->
+        
+        
+        <!-- ВАЛ ПРИВОДНОЙ -->
+        <!-- <div class="project">
+            <img src="images/DM_assembly_drawing.png" alt="Вал приводной" class="project-image">
+            <div class="project-content">
+                <h2 class="project-title">Вал приводной</h2>
+                <p class="project-status status-completed">(Завершено)</p>
+                <div class="project-description">
+                    <p>
+                        <span class="bold underline">Задача:</span> по предоставленному сборочному чертежу советского образца выполнить реверс-инжиниринг приводного вала (спроектировать сборку из 42 деталей и оформить частичный набор КД с указанием допусков и посадок)
+                    </p>
+                    <p class="bold add-space-top underline">Ключевые особенности:</p>
+                    <ul>
+                        <li><span class="bold">CAD:</span> Компас-3D</li>
+                    </ul>
+                    <ul>
+                        <li><span class="bold">Дополнительно:</span> библиотека "валы и механические передачи"</li>
+                    </ul>
+                    <ul>
+                        <li><span class="bold">Литература:</span> справочники Анурьева, Анухина, Курмаза </li>
+                    </ul>
+
+                </div>
+                
+                <div id="project3-gallery" class="additional-media">
+                    <a href="images/DM_1.png" class="media-item">
+                        <img src="images/DM_1.png" alt="3D-модель (вид 1)">
+                    </a>
+                    <a href="images/DM_2.png" class="media-item">
+                        <img src="images/DM_2.png" alt="3D-модель (вид 2)">
+                    </a>
+                    <a href="images/DM_3.png" class="media-item">
+                        <img src="images/DM_3.png" alt="3D-модель (вид 3)">
+                    </a>
+                </div>
+                
+                <div class="project-links">
+                    <a href="#" id="project3-btn" class="project-link">Галерея</a>
+                    <a href="images/DM_source.png" target="_blank" class="project-link">Исходный чертёж</a>
+                    <a href="images/DM_cd.pdf" target="_blank" class="project-link">КД (PDF)</a>
+                </div>
+            </div>
+        </div> -->
+        <!-- Конец проекта-->
+
+        <!-- bitrobotics -->
+        <div class="project">
+            <!-- Главное фото проекта -->
+            <img src="images/BR_main.png" alt="Лазерная линия для конвейера с машинным зрением" class="project-image">
+            <div class="project-content">
+                <h2 class="project-title">Лазерная линия</h2>
+                <p class="project-status status-completed">(Завершено)</p>
+                <div class="project-description">
+                    <p>
+                        <span class="bold underline">Задача:</span> спроектировать для конвейера с машинным зрением герметичный узел, формирующий единую линию на контрольной плоскости, полученную от десяти лазерных модулей. Обеспечить возможность ручной юстировки положения лазерных модулей для выставления всех "вееров" излучения строго в одну плоскость
+                    </p>
+
+                    <p class="bold add-space-top underline">Ключевые особенности:</p>
+                    <ul>
+                        <li><span class="bold">CAD:</span> Компас-3D</li>
+                        <li><span class="bold">Элементы:</span> корпус из фрезерованной алюминиевой плиты, прозрачная крышка из поликарбоната, массив из 10 лазерных модулей на профиле V-slot 2020</li>
+                        <li><span class="bold">Юстировка:</span> массив лазеров юстируется на профиле, после чего фиксируется внутри корпуса</li>
+                    </ul>
+                </div>
+                
+                <div id="project5-gallery" class="additional-media">
+                    <a href="images/BR_scheme.png" class="media-item">
+                        <img src="images/BR_scheme.png" alt="Схема">
+                    </a>
+                    <a href="images/BR_1.png" class="media-item">
+                        <img src="images/BR_1.png" alt="Рис1 битроб">
+                    </a>
+                    <a href="images/BR_2.png" class="media-item">
+                        <img src="images/BR_2.png" alt="Рис2 битроб">
+                    </a>
+                    <a href="images/BR_3.png" class="media-item">
+                        <img src="images/BR_3.png" alt="Рис3 битроб">
+                    </a>
+                </div>
+                
+                <div class="project-links">
+                    <a href="#" id="project5-btn" class="project-link">Галерея</a>
+                </div>
+            </div>
+        </div>
+        <!-- Конец проекта-->
+
+        <!-- РОБОТ-ПОГРУЗЧИК -->
+        <div class="project">
+            <!-- Главное фото проекта -->
+            <img src="images/PP_main.png" alt="Робот-погрузчик" class="project-image">
+            <div class="project-content">
+                <h2 class="project-title">Робот-погрузчик</h2>
+                <p class="project-status status-completed">(Завершено)</p>
+                <div class="project-description">
+                    <p>
+                        <span class="bold underline">Задача:</span> создать миниатюрный погрузчик для инженерных игр, способный распознавать цвет грузов, осуществлять их захват, перевозку и подъем на заданную высоту для сброса
+                    </p>
+
+                    <p class="bold add-space-top underline">Ключевые особенности:</p>
+                    <ul>
+                        <li><span class="bold">CAD:</span> Компас-3D</li>
+                        <li><span class="bold">ПО:</span> MicroPython, VScode, Arduino IDE</li>
+                        <li><span class="bold">Электроника:</span> ESP32, color sensor RGB, servo MG90S</li>
+                        <li><span class="bold">Производство:</span> 3D-печать</li>
+                    </ul>
+                </div>
+                
+                <div id="project4-gallery" class="additional-media">
+                    <a href="images/PP_photo.jpg" class="media-item">
+                        <img src="images/PP_photo.jpg" alt="Фото робота">
+                    </a>
+                    <a href="images/PP_compas_1.png" class="media-item">
+                        <img src="images/PP_compas_1.png" alt="Чертеж 1">
+                    </a>
+                    <a href="images/PP_compas_2.png" class="media-item">
+                        <img src="images/PP_compas_2.png" alt="Чертеж 2">
+                    </a>
+                    <a href="images/PP_compas_3.png" class="media-item">
+                        <img src="images/PP_compas_3.png" alt="Чертеж 3">
+                    </a>
+                    <a href="images/PP_compas_4.png" class="media-item">
+                        <img src="images/PP_compas_4.png" alt="Чертеж 4">
+                    </a>
+                    <a href="images/PP_compas_5.png" class="media-item">
+                        <img src="images/PP_compas_5.png" alt="Чертеж 5">
+                    </a>
+                </div>
+                
+                <div class="project-links">
+                    <a href="#" id="project4-btn" class="project-link">Галерея</a>
+                </div>
+            </div>
+        </div>
+        <!-- Конец проекта-->
+        
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 Михаил Лашин</p>
+            <p>Контакты:    t9169648402@gmail.com (почта), @Random806 (telegram)</p>
+        </div>
+    </footer>
+
+<!-- =============================================================== -->
+<!-- ФИНАЛЬНЫЙ БЛОК СКРИПТОВ                                        -->
+<!-- =============================================================== -->
+
+    <!-- 1. Сначала подключаем библиотеку -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
+
+    <!-- 2. Затем пишем наш собственный код, который всё запускает -->
+    <script>
+        // Ждем, пока ЗАГРУЗИТСЯ ВСЯ СТРАНИЦА, включая все стили и скрипты
+        window.addEventListener('load', function() {
+            
+            // --- Сначала активируем галерею ---
+            baguetteBox.run('.additional-media', {
+                animation: 'fadeIn'
+            });
+
+            // --- "Оживляем" кнопку для Проекта 1 ---
+            const toggleBtn1 = document.getElementById('project1-btn');
+            const gallery1 = document.getElementById('project1-gallery');
+            if (toggleBtn1 && gallery1) {
+                toggleBtn1.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    gallery1.classList.toggle('gallery-visible');
+                    toggleBtn1.textContent = gallery1.classList.contains('gallery-visible') ? 'Скрыть' : 'Галерея';
+                });
+            }
+
+            // --- "Оживляем" кнопку для Проекта 2 ---
+            const toggleBtn2 = document.getElementById('project2-btn');
+            const gallery2 = document.getElementById('project2-gallery');
+            if (toggleBtn2 && gallery2) {
+                toggleBtn2.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    gallery2.classList.toggle('gallery-visible');
+                    toggleBtn2.textContent = gallery2.classList.contains('gallery-visible') ? 'Скрыть' : 'Галерея';
+                });
+            }
+
+            // --- "Оживляем" кнопку для Проекта 3 (Вал приводной) ---
+            // const toggleBtn3 = document.getElementById('project3-btn');
+            // const gallery3 = document.getElementById('project3-gallery');
+            // if (toggleBtn3 && gallery3) {
+            //     toggleBtn3.addEventListener('click', function(event) {
+            //         event.preventDefault();
+            //         gallery3.classList.toggle('gallery-visible');
+            //         toggleBtn3.textContent = gallery3.classList.contains('gallery-visible') ? 'Скрыть' : 'Галерея';
+            //     });
+            // }
+
+            // --- "Оживляем" кнопку для Проекта 4 (Робот-погрузчик) ---
+            const toggleBtn4 = document.getElementById('project4-btn');
+            const gallery4 = document.getElementById('project4-gallery');
+            if (toggleBtn4 && gallery4) {
+                toggleBtn4.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    gallery4.classList.toggle('gallery-visible');
+                    toggleBtn4.textContent = gallery4.classList.contains('gallery-visible') ? 'Скрыть' : 'Галерея';
+                });
+            }
+
+
+            // --- "Оживляем" кнопку для Проекта 5 (bitrobotics) ---
+            const toggleBtn5 = document.getElementById('project5-btn');
+            const gallery5 = document.getElementById('project5-gallery');
+            if (toggleBtn5 && gallery5) {
+                toggleBtn5.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    gallery5.classList.toggle('gallery-visible');
+                    toggleBtn5.textContent = gallery5.classList.contains('gallery-visible') ? 'Скрыть' : 'Галерея';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
